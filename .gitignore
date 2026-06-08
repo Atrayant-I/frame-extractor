@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Configuration and user-specific files
+config.json
+*.bak
+*.lnk
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Editor / IDE configuration
+.vscode/
+.idea/
+
+# Local media / test files
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.wmv
+*.png
+*.jpg
+*.jpeg
+!icons/*.png
+!app_icon.png
