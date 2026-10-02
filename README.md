@@ -1,29 +1,39 @@
 # Frame Extractor
 
-Aplicación de escritorio para explorar vídeos, guardar fotogramas y crear clips con audio. Está construida con Python, PySide6 y OpenCV, con una interfaz oscura de estilo liquid glass.
+A desktop application for exploring videos, saving frames, and creating clips with audio. Built with Python, PySide6, and OpenCV, it features a dark liquid glass interface.
 
-## Funciones
+## Features
 
-- **Modos Capturas y Clips:** selector de dos posiciones centrado en la barra superior, con indicador animado del modo activo.
-- **Captura de fotogramas:** guarda el frame actual en PNG o JPG. La captura respeta el recorte y el zoom visible.
-- **Navegación precisa:** avanza frame a frame, salta por intervalos y permite buscar en la línea de tiempo.
-- **Reproducción con audio:** escucha el audio del vídeo mientras se reproduce en la aplicación.
-- **Miniaturas y vídeos recientes:** navega la tira de miniaturas y vuelve a abrir archivos recientes.
-- **Marcadores:** señala fotogramas de interés y expórtalos como imágenes.
-- **Extracción por lotes:** guarda fotogramas cada cierto número de frames o segundos.
-- **Clips múltiples:** marca varios puntos de inicio y fin en el mismo vídeo; administra los rangos en la lista de clips.
-- **Dos formas de exportar clips:** guarda cada rango como un MP4 independiente o combina los rangos en un vídeo, en orden cronológico.
-- **Exportación con audio:** los MP4 se codifican en H.264 y AAC para facilitar su reproducción en distintos dispositivos.
-- **Configuración persistente:** elige carpeta de salida, formato y calidad de imagen, escala y preferencias de navegación.
+- **Capture and Clips modes:** a centered, two-position switch with an animated indicator for the active mode.
+- **Frame capture:** save the current frame as PNG or JPG. Captures respect the crop selection and visible zoom area.
+- **Precise navigation:** move one frame at a time, jump through the video, or seek on the timeline.
+- **Audio playback:** listen to the video's audio while it plays in the app.
+- **Filmstrip and recent videos:** browse clickable thumbnails and reopen recently used files.
+- **Bookmarks:** mark frames of interest and export them as images.
+- **Batch extraction:** save frames every N frames or seconds.
+- **Multiple clips:** mark several start and end points in one video and manage the ranges in a clip list.
+- **Two clip export options:** save each range as an individual MP4 or combine the ranges into one video in chronological order.
+- **Audio in exported clips:** MP4 files are encoded as H.264 video and AAC audio for broad playback compatibility.
+- **Persistent settings:** configure the output folder, image format and quality, scaling, and navigation preferences.
 
-## Requisitos
+## Requirements
 
-- Python 3.10 o posterior
-- FFmpeg y FFprobe instalados y disponibles en el `PATH` del sistema para exportar clips
+- Python 3.10 or later
+- FFmpeg and FFprobe on your system `PATH` to export clips
 
-La aplicación usa Qt Multimedia para reproducir audio. Los vídeos sin pista de audio se reproducen sin sonido.
+The app uses Qt Multimedia for audio playback. Videos without an audio track play silently.
 
-## Instalación y ejecución
+## Install and run
+
+### Windows quick installation
+
+1. Download and extract `Frame-Extractor-Windows.zip` to the folder where you want to keep the app.
+2. Double-click `install.bat` and wait for installation to finish.
+3. Launch **Frame Extractor** from the desktop shortcut.
+
+The installer requires Python 3.10 or later and an Internet connection to download dependencies. It creates a virtual environment inside the extracted folder. If you move that folder, run `install.bat` again to update the shortcut. FFmpeg and FFprobe are optional for installation and required only for clip export.
+
+### Manual installation
 
 ```bash
 git clone https://github.com/Atrayant-I/frame-extractor.git
@@ -32,38 +42,38 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
-En Windows, si FFmpeg no está disponible, la aplicación avisará al intentar exportar clips. Instala FFmpeg y asegúrate de que tanto `ffmpeg` como `ffprobe` se puedan ejecutar desde una terminal.
+On Windows, the app will notify you if FFmpeg is unavailable when you try to export clips. Install FFmpeg and make sure both `ffmpeg` and `ffprobe` can be run from a terminal.
 
-## Uso del modo Clips
+## Using Clips mode
 
-1. Abre un vídeo y selecciona **Clips** en el selector centrado de la barra superior.
-2. Busca el frame inicial y pulsa **Marcar inicio** (o `I`).
-3. Busca el frame final y pulsa **Marcar fin** (o `O`). El rango queda agregado a la lista; repite para añadir más clips.
-4. Abre **Clips** para revisar o eliminar rangos y elige **Guardar clips individuales** o **Guardar video combinado**.
+1. Open a video and select **Clips** with the centered switch at the top. The app's controls are labeled in Spanish.
+2. Seek to the start frame and choose **Marcar inicio** (Mark start) or press `I`.
+3. Seek to the end frame and choose **Marcar fin** (Mark end) or press `O`. The range is added to the list; repeat to add more clips.
+4. Open **Clips** to review or remove ranges, then choose **Guardar clips individuales** (Save individual clips) or **Guardar video combinado** (Save combined video).
 
-Los rangos se exportan en el orden temporal del vídeo original. El frame final marcado se incluye en el clip.
+Ranges are exported in their original chronological order. The marked end frame is included in each clip.
 
-## Atajos de teclado
+## Keyboard shortcuts
 
-| Tecla | Acción |
+| Key | Action |
 | --- | --- |
-| `Espacio` | En Capturas, guarda el frame actual; en Clips, reproduce o pausa |
-| `←` / `→` | Ir al frame anterior o siguiente |
-| `Shift` + `←` / `→` | Saltar hacia atrás o adelante |
-| `I` / `O` | Marcar inicio o fin de un clip en modo Clips |
-| `M` | Añadir o quitar marcador en modo Capturas |
-| `Ctrl` + `S` | Guardar el frame actual |
-| `Ctrl` + `O` | Abrir un vídeo |
-| `Ctrl` + `E` | Abrir la carpeta de exportación |
-| `Inicio` / `Fin` | Ir al primer o último frame |
+| `Space` | Save the current frame in Capturas mode; play or pause in Clips mode |
+| `←` / `→` | Move to the previous or next frame |
+| `Shift` + `←` / `→` | Jump backward or forward |
+| `I` / `O` | Mark a clip's start or end in Clips mode |
+| `M` | Toggle a bookmark in Capturas mode |
+| `Ctrl` + `S` | Save the current frame |
+| `Ctrl` + `O` | Open a video |
+| `Ctrl` + `E` | Open the export folder |
+| `Home` / `End` | Go to the first or last frame |
 
-## Tecnologías
+## Technologies
 
 - Python
-- PySide6 / Qt Widgets y Qt Multimedia
+- PySide6 / Qt Widgets and Qt Multimedia
 - OpenCV (`opencv-python`)
-- FFmpeg / FFprobe para exportar clips
+- FFmpeg / FFprobe for clip export
 
-## Licencia
+## License
 
-Este proyecto se distribuye bajo la licencia MIT. Consulta [`LICENSE`](LICENSE) para ver sus términos.
+This project is distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
