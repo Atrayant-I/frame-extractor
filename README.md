@@ -1,64 +1,69 @@
 # Frame Extractor
 
-A professional, high-performance desktop application for precise video frame extraction and navigation. Built with Python, OpenCV, and Tkinter, it features a modern dark-themed GUI designed for seamless user experience and millisecond-accurate seeking.
+Aplicación de escritorio para explorar vídeos, guardar fotogramas y crear clips con audio. Está construida con Python, PySide6 y OpenCV, con una interfaz oscura de estilo liquid glass.
 
-## About the Project
+## Funciones
 
-Frame Extractor is designed for developers, video editors, and researchers who need a lightweight, fast, and precise tool to navigate video files and extract specific frames. By separating the GUI thread from video decoding and caching operations via a persistent background preloader, Frame Extractor achieves near-zero latency seeking, solving common performance bottlenecks found in standard video player tools.
+- **Modos Capturas y Clips:** selector de dos posiciones centrado en la barra superior, con indicador animado del modo activo.
+- **Captura de fotogramas:** guarda el frame actual en PNG o JPG. La captura respeta el recorte y el zoom visible.
+- **Navegación precisa:** avanza frame a frame, salta por intervalos y permite buscar en la línea de tiempo.
+- **Reproducción con audio:** escucha el audio del vídeo mientras se reproduce en la aplicación.
+- **Miniaturas y vídeos recientes:** navega la tira de miniaturas y vuelve a abrir archivos recientes.
+- **Marcadores:** señala fotogramas de interés y expórtalos como imágenes.
+- **Extracción por lotes:** guarda fotogramas cada cierto número de frames o segundos.
+- **Clips múltiples:** marca varios puntos de inicio y fin en el mismo vídeo; administra los rangos en la lista de clips.
+- **Dos formas de exportar clips:** guarda cada rango como un MP4 independiente o combina los rangos en un vídeo, en orden cronológico.
+- **Exportación con audio:** los MP4 se codifican en H.264 y AAC para facilitar su reproducción en distintos dispositivos.
+- **Configuración persistente:** elige carpeta de salida, formato y calidad de imagen, escala y preferencias de navegación.
 
-## Key Features
+## Requisitos
 
-- **⚡ Hardware-Accelerated Seeking**: Employs a persistent worker thread (`PreloadWorker`) that keeps the video stream buffer open, eliminating the overhead of repeatedly reloading video container headers.
-- **⏱️ Frame-Accurate Controls**: Navigate frame-by-frame with precision using arrow keys, or jump quickly by ±10 frames using `Shift + Arrows`.
-- **🖱️ Drag & Drop Interface**: Drag any video file directly onto the main canvas for instant loading and preview.
-- **🎞️ Dynamic Filmstrip**: Generates visual, clickable timeline thumbnails automatically upon video loading for fast timeline scrub jumps.
-- **🔖 Multi-Frame Bookmarking**: Tag key frames during review and export them all at once into your designated directory.
-- **📋 Batch Processing**: Automate frame extraction by saving one frame every N frames throughout the entire duration of the video.
-- **⚙️ Configurable Presets**: Configure default export paths, output formats (PNG/JPG), and JPEG quality parameters that persist between sessions.
-- **📜 Recent Workspace**: Remembers the last 8 opened video directories for quick access.
+- Python 3.10 o posterior
+- FFmpeg y FFprobe instalados y disponibles en el `PATH` del sistema para exportar clips
 
-## Tech Stack
+La aplicación usa Qt Multimedia para reproducir audio. Los vídeos sin pista de audio se reproducen sin sonido.
 
-- **Core Logic**: Python 3.8+
-- **Video Decoding**: OpenCV (`opencv-python`)
-- **Image Processing**: Pillow (PIL)
-- **GUI Engine**: Tkinter (with `tkinterdnd2` integration for drag & drop capabilities)
+## Instalación y ejecución
 
-## Installation & Setup
+```bash
+git clone https://github.com/Atrayant-I/frame-extractor.git
+cd frame-extractor
+python -m pip install -r requirements.txt
+python main.py
+```
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Atrayant-I/frame-extractor.git
-   cd frame-extractor
-   ```
+En Windows, si FFmpeg no está disponible, la aplicación avisará al intentar exportar clips. Instala FFmpeg y asegúrate de que tanto `ffmpeg` como `ffprobe` se puedan ejecutar desde una terminal.
 
-2. **Install Dependencies**
-   Ensure you have Python installed, then run:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Uso del modo Clips
 
-3. **Run the Application**
-   ```bash
-   python main.py
-   ```
+1. Abre un vídeo y selecciona **Clips** en el selector centrado de la barra superior.
+2. Busca el frame inicial y pulsa **Marcar inicio** (o `I`).
+3. Busca el frame final y pulsa **Marcar fin** (o `O`). El rango queda agregado a la lista; repite para añadir más clips.
+4. Abre **Clips** para revisar o eliminar rangos y elige **Guardar clips individuales** o **Guardar video combinado**.
 
-## Keyboard Shortcuts Quick Reference
+Los rangos se exportan en el orden temporal del vídeo original. El frame final marcado se incluye en el clip.
 
-| Shortcut | Action |
+## Atajos de teclado
+
+| Tecla | Acción |
 | --- | --- |
-| `Spacebar` | Toggle Play / Pause playback |
-| `Left Arrow` | Step 1 frame backward |
-| `Right Arrow` | Step 1 frame forward |
-| `Shift + Left` | Jump 10 frames backward |
-| `Shift + Right` | Jump 10 frames forward |
-| `M` | Toggle bookmark on current frame |
-| `Ctrl + S` | Save current frame instantly |
-| `Ctrl + O` | Open file explorer to load a video |
-| `Ctrl + E` | Open the export directory in system Explorer |
-| `Home` | Seek to the first frame |
-| `End` | Seek to the last frame |
+| `Espacio` | En Capturas, guarda el frame actual; en Clips, reproduce o pausa |
+| `←` / `→` | Ir al frame anterior o siguiente |
+| `Shift` + `←` / `→` | Saltar hacia atrás o adelante |
+| `I` / `O` | Marcar inicio o fin de un clip en modo Clips |
+| `M` | Añadir o quitar marcador en modo Capturas |
+| `Ctrl` + `S` | Guardar el frame actual |
+| `Ctrl` + `O` | Abrir un vídeo |
+| `Ctrl` + `E` | Abrir la carpeta de exportación |
+| `Inicio` / `Fin` | Ir al primer o último frame |
 
-## License
+## Tecnologías
 
-This software is released under the **MIT License**. Feel free to use, modify, and distribute it for personal and commercial applications.
+- Python
+- PySide6 / Qt Widgets y Qt Multimedia
+- OpenCV (`opencv-python`)
+- FFmpeg / FFprobe para exportar clips
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT. Consulta [`LICENSE`](LICENSE) para ver sus términos.
