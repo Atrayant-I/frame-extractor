@@ -1884,7 +1884,7 @@ class MainWindow(QMainWindow):
         dlg = QDialog(self)
         dlg.setWindowTitle("Clips del video")
         dlg.setModal(True)
-        dlg.resize(620, 390)
+        dlg.resize(680, 450)
         dlg.setStyleSheet(f"""
             QDialog {{
                 background: rgba({self._palette['glass_solid'].red()},{self._palette['glass_solid'].green()},{self._palette['glass_solid'].blue()}, 245);
@@ -1916,6 +1916,25 @@ class MainWindow(QMainWindow):
         title = QLabel("Selecciona clips para revisarlos o eliminarlos. Se exportarán con audio.")
         title.setWordWrap(True)
         v.addWidget(title)
+        v.addWidget(QLabel("Carpeta donde guardar los clips:"))
+        destination_row = QHBoxLayout()
+        destination_path = QLineEdit(os.path.dirname(os.path.abspath(video_path)))
+        destination_path.setReadOnly(True)
+        destination_path.setStyleSheet(self._entry_stylesheet())
+        destination_row.addWidget(destination_path, 1)
+        browse_destination_btn = GlassButton(text="Cambiar...")
+        browse_destination_btn.set_colors(self._palette["glass_bg"], self._palette["glass_hover"], self._palette["fg"])
+
+        def choose_destination():
+            folder = QFileDialog.getExistingDirectory(
+                dlg, "Carpeta de destino para clips", destination_path.text()
+            )
+            if folder:
+                destination_path.setText(os.path.abspath(folder))
+
+        browse_destination_btn.clicked.connect(choose_destination)
+        destination_row.addWidget(browse_destination_btn)
+        v.addLayout(destination_row)
         clip_list = QListWidget()
         v.addWidget(clip_list, 1)
 
@@ -1962,8 +1981,8 @@ class MainWindow(QMainWindow):
         delete_btn.clicked.connect(delete_selected)
         clear_btn.clicked.connect(clear_all)
         clip_list.currentRowChanged.connect(lambda _row: update_selection_buttons())
-        individual_btn.clicked.connect(lambda: self._start_clip_export(False, dlg))
-        combined_btn.clicked.connect(lambda: self._start_clip_export(True, dlg))
+        individual_btn.clicked.connect(lambda: self._start_clip_export(False, dlg, destination_path.text()))
+        combined_btn.clicked.connect(lambda: self._start_clip_export(True, dlg, destination_path.text()))
         close_btn.clicked.connect(dlg.reject)
 
         edit_row = QHBoxLayout()
@@ -1987,7 +2006,7 @@ class MainWindow(QMainWindow):
         if self._clip_export_dialog is dlg:
             self._clip_export_dialog = None
 
-    def _start_clip_export(self, combined, dlg):
+    def _start_clip_export(self, combined, dlg, destination):
         if self._clip_export_in_progress or not self.clips:
             return
         ffmpeg_path = shutil.which("ffmpeg")
@@ -2009,8 +2028,15 @@ class MainWindow(QMainWindow):
         clips.sort(key=lambda item: (item["start"], item["end"]))
         source_path = video_path
         source_fps = float(video_fps)
-        output_folder = config.get("save_folder", "")
-        os.makedirs(output_folder, exist_ok=True)
+        output_folder = os.path.abspath(destination.strip()) if destination.strip() else ""
+        if not output_folder:
+            QMessageBox.warning(dlg, "Carpeta no válida", "Selecciona una carpeta de destino para los clips.")
+            return
+        try:
+            os.makedirs(output_folder, exist_ok=True)
+        except OSError as exc:
+            QMessageBox.critical(dlg, "Carpeta no disponible", f"No se pudo acceder a la carpeta de destino:\n{exc}")
+            return
         stem = self._video_stem()
         rename = bool(config.get("rename_duplicates", True))
         if combined:
@@ -2044,6 +2070,7 @@ class MainWindow(QMainWindow):
     def _run_clip_export(self, ffmpeg_path, ffprobe_path, source_path, source_fps, clips,
                          output_folder, stem, rename, combined, output_path):
         try:
+            os.makedirs(output_folder, exist_ok=True)
             if combined:
                 has_audio = self._has_audio_stream(ffprobe_path, source_path)
                 filters = []

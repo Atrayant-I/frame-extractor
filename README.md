@@ -50,6 +50,7 @@ On Windows, the app will notify you if FFmpeg is unavailable when you try to exp
 2. Seek to the start frame and choose **Marcar inicio** (Mark start) or press `I`.
 3. Seek to the end frame and choose **Marcar fin** (Mark end) or press `O`. The range is added to the list; repeat to add more clips.
 4. Open **Clips** to review or remove ranges, then choose **Guardar clips individuales** (Save individual clips) or **Guardar video combinado** (Save combined video).
+5. Clips are saved beside the original video by default. Use **Cambiar...** in the Clips window to choose a different destination folder for either export option.
 
 Ranges are exported in their original chronological order. The marked end frame is included in each clip.
 
