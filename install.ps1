@@ -22,7 +22,7 @@ try {
         $PythonPrefix = @()
     }
 
-    Write-Step "Comprobando Python"
+    Write-Step "Checking Python"
     $VersionText = & $PythonCommand @PythonPrefix --version 2>&1 | Out-String
     if ($LASTEXITCODE -ne 0 -or $VersionText -notmatch "Python\s+(\d+)\.(\d+)") {
         throw "Could not determine the Python version."
@@ -35,14 +35,14 @@ try {
     Write-Host $VersionText.Trim()
 
     if (-not (Test-Path -LiteralPath $VenvPython)) {
-        Write-Step "Creando entorno virtual"
+        Write-Step "Creating virtual environment"
         & $PythonCommand @PythonPrefix -m venv $VenvDir
         if ($LASTEXITCODE -ne 0) { throw "Could not create the virtual environment." }
     } else {
-        Write-Step "Entorno virtual existente detectado"
+        Write-Step "Existing virtual environment detected"
     }
 
-    Write-Step "Instalando dependencias"
+    Write-Step "Installing dependencies"
     & $VenvPython -m pip install --upgrade pip
     if ($LASTEXITCODE -ne 0) { throw "Could not upgrade pip." }
     & $VenvPython -m pip install -r (Join-Path $ProjectDir "requirements.txt")
@@ -52,7 +52,7 @@ try {
         throw "pythonw.exe was not found in the virtual environment. Check your Python installation."
     }
 
-    Write-Step "Creando acceso directo en el Escritorio"
+    Write-Step "Creating desktop shortcut"
     $Desktop = [Environment]::GetFolderPath("Desktop")
     if (-not $Desktop -or -not (Test-Path -LiteralPath $Desktop)) {
         throw "Could not find the Windows Desktop folder."
@@ -68,7 +68,10 @@ try {
     if (Test-Path -LiteralPath $IconPath) { $Shortcut.IconLocation = $IconPath }
     $Shortcut.Description = "Frame Extractor - Save frames and create video clips"
     $Shortcut.Save()
-    Write-Host "Desktop shortcut created: $ShortcutPath" -ForegroundColor Green
+    if (-not (Test-Path -LiteralPath $ShortcutPath -PathType Leaf)) {
+        throw "Windows did not create the desktop shortcut at: $ShortcutPath"
+    }
+    Write-Host "Desktop shortcut created and verified: $ShortcutPath" -ForegroundColor Green
 
     if (-not (Get-Command "ffmpeg.exe" -ErrorAction SilentlyContinue) -or
         -not (Get-Command "ffprobe.exe" -ErrorAction SilentlyContinue)) {
